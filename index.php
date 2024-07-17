@@ -1,78 +1,42 @@
 <?php
-    // Importando autoload
+    // Imports
+    // Iterface que define o tipo das requests e responses (requisições e respostas)
+    use \Psr\Http\Message\ServerRequestInterface as Request;
+    use \Psr\Http\Message\ResponseInterface as Response;
+
+    // autoload
     require 'vendor/autoload.php';
 
-    // instanciando app
+    // app
     $app = new \Slim\App;
 
-    // get() -> declara rotas
-    // param 1 -> route
-    // pram 2 -> ação
-    $app->get('/postagens2', function() {
-        echo 'Lista de postagens';
+    // routes
+    // Tipando request e response
+    $app->get('/postagens', function(Request $request, Response $response) {
+        // PADRÂO PSR-7
+        // getBody()-> Acessa corpo da ResponseInterface
+        // write()-> Escreve no obj chamado
+        $response->getBody()->write('Lista de Postagens');
+
+        return $response;
     });
 
-    // {} -> define valores/variaveis (placeholder) dinâmicos para a url | são obrigatórios
-    // [] -> Define valore dinâmico como OPCIONAL
-    $app->get('/usuarios[/{id}]', function($request, $response) {
-        // getAttribute() -> recupera attrs da requisição
-        $id = $request->getAttribute('id');
+    // Tipos de requisição | Verbos HTTP
+        // get -> recupera recursos do servidor (select)
+        // post -> Cria dados no servidor (insert)
+        // put -> Atualiza dados no servidor (update)
+        // delete -> Deleta dados no servidor (delete)
 
-        echo 'Lista de usuários | ID: ' . $id;
+    $app->post('/usuarios/adiciona', function(Request $request, Response $response) {
+        // Recuoerando dados $_POST (Postman)
+        // getParseBody() -> recupera dados de forms (post)
+        $post = $request->getParsedBody();
+        $nome = $post['nome'];
+        $email = $post['email'];
+
+        return $response->getBody()->write($nome . ' | ' . $email);
     });
 
-    // [[]] -> sub valores opcionais
-    $app->get('/postagens[/{ano}[/{mes}]]', function($request, $response) {
-        $ano = $request->getAttribute('ano');
-        $mes = $request->getAttribute('mes');
-
-        echo 'Lista de postagens | Ano: ' . $ano . ' | Mês: ' . $mes;
-    });
-
-    // Definindo diversos valores oara a url
-    // .* -> aceita qq valor como param
-    $app->get('/lista/{itens:.*}', function($request, $response) {
-        $itens = $request->getAttribute('itens');
-
-        // debug
-        // echo $itens;
-
-        // exbindo diversos itens
-        // var_dump() -> retorna uma string com identificação do obj chamado
-        // explode() -> divide strings a partir de um caractere demilitador
-        var_dump(explode('/', $itens));
-
-    });
-
-    // Nomeando rotas
-    $app->get('/blog/postagens/{id}', function($request, $response) {
-        $id = $request->getAttribute('id');
-
-        echo "lista de posts por ID | ID: " . $id;
-
-    // Defina um nome para a rota
-    })->setName('blog');
-
-    $app->get('/meusite', function($request, $response) {
-        // get('router')-> Captura rota declarada
-        // pathFor()-> indica caminho para rota nomeada | pode incluir params
-        $retorno = $this->get('router')->pathFor('blog', ["id" => "19"]);
-
-        echo $retorno;
-    });
-
-    // Agrupando rotas
-    // group() -> cria grupos de rotas
-    $app->group('/v1', function() {
-        $this->get('/usuarios', function() {
-            echo 'Lista de usuários V1';
-        });
-
-        $this->get('/postagens', function() {
-            echo 'Lista de postagens V1';
-        });
-    });
-
-    // run() -> executa app
+    // init app
     $app->run();
 ?>
