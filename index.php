@@ -1,70 +1,44 @@
 <?php
-    // Imports
-    // Iterface que define o tipo das requests e responses (requisições e respostas)
     use \Psr\Http\Message\ServerRequestInterface as Request;
     use \Psr\Http\Message\ResponseInterface as Response;
 
-    // autoload
-    require 'vendor/autoload.php';
+    require "vendor/autoload.php";
 
-    // app
     $app = new \Slim\App;
 
-    // routes
-
     $app->get('/', function(Request $request, Response $response) {
-        $response->getBody()->write('Index on!');
+        $response->getBody()->write('My Slim API ON!');
     });
 
-    // Tipando request e response
-    $app->get('/postagens', function(Request $request, Response $response) {
-        // PADRÂO PSR-7
-        // getBody()-> Acessa corpo da ResponseInterface
-        // write()-> Escreve no obj chamado
-        $response->getBody()->write('Lista de Postagens');
+    // Container Dependency Injection
+    class Servico {
 
-        return $response;
+    }
+
+    $servico = new Servico;
+
+    // use ($servico) -> Acessa container externos ao Slim | Não muito utilizado
+
+    // Pimple Container
+    // insanciando container
+    $container = $app->getContainer();
+
+    // definindo container
+    $container['servico'] = function() {
+        return new Servico;
+    };
+
+    $app->get('/servico', function(Request $request, Response $response) {
+        // recuperando container | Injeção de dependencia
+        $servico = $this->get('servico');
+
+        var_dump($servico);
     });
 
-    // Tipos de requisição | Verbos HTTP
-        // get -> recupera recursos do servidor (select)
-        // post -> Cria dados no servidor (insert)
-        // put -> Atualiza dados no servidor (update)
-        // delete -> Deleta dados no servidor (delete)
+    // Controller como Serviço
+    // $app->get('/usuario', 'Classe:metodo'{
 
-    $app->post('/usuarios/adiciona', function(Request $request, Response $response) {
-        // Recuoerando dados $_POST (Postman)
-        // getParseBody() -> recupera dados de forms (post)
-        $post = $request->getParsedBody();
-        $nome = $post['nome'];
-        $email = $post['email'];
+    // });
 
-        // Faça sua lógica para insert into DB
-
-        return $response->getBody()->write('Dados salvos no DB via post request!');
-    });
-
-    $app->put('/usuarios/atualiza', function(Request $request, Response $response) {
-        // Recuoerando dados $_POST (Postman)
-        // getParseBody() -> recupera dados de forms (post)
-        $post = $request->getParsedBody();
-        $id = $post['id'];
-        $nome = $post['nome'];
-        $email = $post['email'];
-
-        // Faça sua lógica para update DB
-
-        return $response->getBody()->write('Dados ATUALIZADOS no DB via put request!');
-    });
-
-    $app->delete('/usuarios/remove/{id}', function(Request $request, Response $response) {
-        $id = $request->getAttribute('id');
-
-        // Faça sua lógica para delete no DB
-
-        return $response->getBody()->write('Usuário removido | ID: ' . $id);
-    });
-
-    // init app
     $app->run();
 ?>

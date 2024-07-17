@@ -11,6 +11,11 @@ My API
 ## PSR 7
 ![alt text](/img/image-1.png)
 
+## PSR 4 | autoloader
+![alt text](img/image-4.png)
+### Atualizando Dependências
+![alt text](img/image-5.png)
+
 ## Postman
 ### GET
 ![alt text](img/image-2.png)
