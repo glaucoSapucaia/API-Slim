@@ -4,7 +4,14 @@
 
     require "vendor/autoload.php";
 
-    $app = new \Slim\App;
+    // Podemos definir caracteristicas do App quando o instanciamos
+    $app = new \Slim\App(
+        // array para configurações | JSON
+        // displayErrorDetails -> Mostra detalhes de erro! Use apenas para testes, não em produção
+        [
+            'settings' => ['displayErrorDetails' => true]
+        ]
+    );
 
     $app->get('/', function(Request $request, Response $response) {
         $response->getBody()->write('My Slim API ON!');
@@ -35,10 +42,17 @@
         var_dump($servico);
     });
 
-    // Controller como Serviço
-    // $app->get('/usuario', 'Classe:metodo'{
+    // Buscando container e classes (dependencias)
 
-    // });
+    $container = $app->getContainer();
+
+    $container['Home'] = function() {
+        return new MyApp\controllers\Home(new MyApp\View);
+    };
+
+    // param 1 -> route
+    // param 2 -> Classe a utilizada | O slim cria a instancia automaticamente
+    $app->get('/usuario', 'Home:index');
 
     $app->run();
 ?>
