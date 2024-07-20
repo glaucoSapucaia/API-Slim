@@ -7,6 +7,11 @@ My API
 - [xampp](https://www.apachefriends.org/pt_br/index.html)
 - [padrões PHP | PSRs](https://www.php-fig.org/)
 - [postman](https://www.postman.com/)
+- [illuminate db](https://github.com/illuminate/database)
+- [laravel](https://laravel.com/docs/11.x/readme)
+
+## Illuminate DB Install
+![alt text](img/image-7.png)
 
 ## PSR 7
 ![alt text](/img/image-1.png)
