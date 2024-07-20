@@ -22,6 +22,9 @@ My API
 ### POST
 ![alt text](img/image-3.png)
 
+## Headers
+![alt text](img/image-6.png)
+
 ## Slim error v3 | Page not found
 Use o código de teste abaixo!  
 ![alt text](img/image.png)
